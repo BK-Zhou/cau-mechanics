@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中国农业大学应用力学系研究生招生平台</title>
+    <style>
+        /* --- 核心变量与基础样式 --- */
+        :root {
+            --cau-green: #006633; /* 中国农大标准绿 */
+            --cau-green-hover: #004d26;
+            --cau-gold: #e6b800;
+            --text-main: #333333;
+            --text-muted: #666666;
+            --bg-light: #f5f7f6;
+            --bg-white: #ffffff;
+            --border-color: #e0e0e0;
+            --sidebar-width: 260px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--text-main);
+            background-color: var(--bg-light);
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* --- 经典左侧导航栏 --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--cau-green);
+            color: var(--bg-white);
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .logo-area {
+            padding: 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .logo-area h1 {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            line-height: 1.4;
+        }
+
+        .logo-area p {
+            font-size: 11px;
+            color: var(--cau-gold);
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 20px 0;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .nav-item a {
+            display: block;
+            padding: 14px 24px;
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            font-size: 15px;
+            transition: var(--transition);
+            border-left: 4px solid transparent;
+        }
+
+        .nav-item a:hover, .nav-item.active a {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--bg-white);
+            border-left-color: var(--cau-gold);
+        }
+
+        /* --- 右侧主内容区 --- */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex-grow: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 顶部工具栏 */
+        .top-bar {
+            background-color: var(--bg-white);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--cau-green);
+            cursor: pointer;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            background-color: var(--bg-light);
+            border-radius: 30px;
+            padding: 4px 8px;
+            border: 1px solid var(--border-color);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .search-engine-select {
+            border: none;
+            background: transparent;
+            padding: 0 10px;
+            font-size: 13px;
+            color: var(--cau-green);
+            font-weight: bold;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .search-input {
+            border: none;
+            background: transparent;
+            padding: 8px 12px;
+            flex-grow: 1;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .search-btn {
+            background-color: var(--cau-green);
+            color: var(--bg-white);
+            border: none;
+            padding: 6px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: var(--transition);
+        }
+
+        .search-btn:hover {
+            background-color: var(--cau-green-hover);
+        }
+
+        .user-status {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .user-status span {
+            color: var(--cau-green);
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .logout-btn {
+            background: none;
+            border: 1px solid #ff4d4f;
+            color: #ff4d4f;
+            padding: 4px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: var(--transition);
+        }
+
+        .logout-btn:hover {
+            background-color: #ff4d4f;
+            color: white;
+        }
+
+        /* 主体容器 */
+        .content-body {
+            padding: 30px;
+        }
+
+        .content-section {
+            background-color: var(--bg-white);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            scroll-margin-top: 90px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            color: var(--cau-green);
+            border-left: 4px solid var(--cau-green);
+            padding-left: 12px;
+            margin-bottom: 20px;
+        }
+
+        /* --- 导航卡片网格系统 --- */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .nav-card {
+            background-color: var(--bg-white);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 18px;
+            display: flex;
+            align-items: flex-start;
+            text-decoration: none;
+            color: var(--text-main);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .nav-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: var(--cau-green);
+        }
+
+        .card-icon {
+            width: 44px;
+            height: 44px;
+            background-color: rgba(0, 102, 51, 0.1);
+            color: var(--cau-green);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            margin-right: 14px;
+            flex-shrink: 0;
+        }
+
+        .card-info {
+            flex-grow: 1;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-main);
+        }
+
+        .card-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* --- 动态报名与权限交互区 --- */
+        .auth-box {
+            max-width: 450px;
+            margin: 20px auto;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .auth-tabs {
+            display: flex;
+            background-color: var(--bg-light);
+        }
+
+        .auth-tab-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--text-muted);
+        }
+
+        .auth-tab-btn.active {
+            background-color: var(--bg-white);
+            color: var(--cau-green);
+            border-top: 3px solid var(--cau-green);
+        }
+
+        .auth-form {
+            padding: 24px;
+            display: none;
+        }
+
+        .auth-form.active {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* 表单网格自适应系统 */
+        .apply-panel {
+            max-width: 850px;
+            margin: 0 auto;
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .form-group input, .form-group textarea {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            outline: none;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: var(--cau-green);
+            box-shadow: 0 0 0 2px rgba(0,102,51,0.1);
+        }
+
+        .submit-btn {
+            background-color: var(--cau-green);
+            color: var(--bg-white);
+            border: none;
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .submit-btn:hover {
+            background-color: var(--cau-green-hover);
+        }
+
+        .file-hint {
+            font-size: 12px;
+            color: #ff4d4f;
+            margin-top: 4px;
+        }
+
+        /* 管理员控制台 */
+        .admin-panel {
+            display: none;
+        }
+
+        .admin-actions {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .export-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .export-btn:hover {
+            background-color: #218838;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        .data-table th, .data-table td {
+            padding: 12px 14px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .data-table th {
+            background-color: var(--bg-light);
+            color: var(--cau-green);
+            font-weight: bold;
+        }
+
+        .data-table tr:hover {
+            background-color: rgba(0,0,0,0.02);
+        }
+
+        .action-link {
+            color: var(--cau-green);
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .action-link:hover {
+            text-decoration: underline;
+        }
+
+        /* --- 响应式断点设计 --- */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .hamburger {
+                display: block;
+            }
+            .top-bar {
+                padding: 15px;
+            }
+            .search-container {
+                max-width: 200px;
+            }
+            .search-btn {
+                display: none;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="logo-area">
+            <h1>中国农业大学</h1>
+            <p>应用力学系研究生招生</p>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item active" data-target="intro"><a href="#intro">招生简介</a></li>
+            <li class="nav-item" data-target="faculty"><a href="#faculty">导师阵营</a></li>
+            <li class="nav-item" data-target="download"><a href="#download">资料下载</a></li>
+            <li class="nav-item" data-target="portal"><a href="#portal">网上报名</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        
+        <header class="top-bar">
+            <button class="hamburger" id="hamburger" aria-label="菜单">☰</button>
+            
+            <div class="search-container">
+                <select class="search-engine-select" id="engineSelect">
+                    <option value="https://www.baidu.com/s?wd=">百度</option>
+                    <option value="https://www.google.com/search?q=">谷歌</option>
+                    <option value="https://www.bing.com/search?q=">必应</option>
+                </select>
+                <input type="text" class="search-input" id="searchInput" placeholder="搜索学术动态...">
+                <button class="search-btn" id="searchBtn">搜索</button>
+            </div>
+
+            <div class="user-status" id="userStatusArea">
+                <span>未登录</span>
+            </div>
+        </header>
+
+        <div class="content-body">
+
+            <section id="intro" class="content-section">
+                <h2 class="section-title">招生简介</h2>
+                <div class="card-grid">
+                    <a class="nav-card" href="https://www.cau.edu.cn" target="_blank">
+                        <div class="card-icon">硕</div>
+                        <div class="card-info">
+                            <div class="card-title">2027年学术型硕士招生简章</div>
+                            <div class="card-desc">包含固体力学、流体力学专业学术型硕士报考基本条件、推免生接收办法及研究方向详情。</div>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <section id="faculty" class="content-section">
+                <h2 class="section-title">导师阵营</h2>
+                <div class="card-grid">
+                    <a class="nav-card" href="https://sci.cau.edu.cn/col/col40615/index.html" target="_blank">
+                        <div class="card-icon">师</div>
+                        <div class="card-info">
+                            <div class="card-title">理学院应用力学系专任教师</div>
+                            <div class="card-desc" style="color: #ff4d4f; font-weight: bold; margin-top: 4px;">🎯 注意点击“按系别分类-应用力学”</div>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <section id="download" class="content-section">
+                <h2 class="section-title">资料下载</h2>
+                <div class="card-grid">
+                    <a class="nav-card" href="https://www.cau.edu.cn" target="_blank">
+                        <div class="card-icon">D</div>
+                        <div class="card-info">
+                            <div class="card-title">研究生报考导师推荐信模板</div>
+                            <div class="card-desc">点击在新标签页打开并下载我系标准专家推荐信Word版。</div>
+                        </div>
+                    </a>
+                    <a class="nav-card" href="https://www.cau.edu.cn" target="_blank">
+                        <div class="card-icon">D</div>
+                        <div class="card-info">
+                            <div class="card-title">复试个人陈述表（自述模板）</div>
+                            <div class="card-desc">用于应用力学系研究生复试时提交的个人综合情况表。</div>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <section id="portal" class="content-section">
+                <h2 class="section-title">网上报名交互系统</h2>
+                
+                <div class="auth-box" id="authBox">
+                    <div class="auth-tabs">
+                        <button class="auth-tab-btn active" onclick="switchAuthMode('login')">学生/管理员登录</button>
+                        <button class="auth-tab-btn" onclick="switchAuthMode('register')">学生账号注册</button>
+                    </div>
+                    
+                    <form class="auth-form active" id="loginForm" onsubmit="handleLogin(event)">
+                        <div class="form-group">
+                            <label for="loginUser">用户名 / 账号</label>
+                            <input type="text" id="loginUser" required placeholder="请输入您的账号">
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPwd">密码</label>
+                            <input type="password" id="loginPwd" required placeholder="请输入密码">
+                        </div>
+                        <button type="submit" class="submit-btn">立即登录</button>
+                    </form>
+
+                    <form class="auth-form" id="registerForm" onsubmit="handleRegister(event)">
+                        <div class="form-group">
+                            <label for="regUser">设置用户名</label>
+                            <input type="text" id="regUser" required placeholder="建议使用身份证或学号">
+                        </div>
+                        <div class="form-group">
+                            <label for="regPwd">设置密码</label>
+                            <input type="password" id="regPwd" required placeholder="请牢记您的密码">
+                        </div>
+                        <button type="submit" class="submit-btn">提交注册</button>
+                    </form>
+                </div>
+
+                <div class="apply-panel" id="applyPanel">
+                    <h3 style="color: var(--cau-green); margin-bottom: 5px;">👋 欢迎报考应用力学系！请详尽填写以下招生报名信息：</h3>
+                    <form id="submissionForm" onsubmit="handleApplicationSubmit(event)">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="fullName">真实姓名 *</label>
+                                <input type="text" id="fullName" required placeholder="请输入真实姓名">
+                            </div>
+                            <div class="form-group">
+                                <label for="idCard">身份证号 *</label>
+                                <input type="text" id="idCard" required placeholder="请输入18位身份证号">
+                            </div>
+                            <div class="form-group">
+                                <label for="phoneNumber">联系电话 *</label>
+                                <input type="tel" id="phoneNumber" required placeholder="11位常用手机号">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">电子邮箱 *</label>
+                                <input type="email" id="email" required placeholder="用于接收复试通知">
+                            </div>
+                            <div class="form-group">
+                                <label for="school">本科毕业/就读学校 *</label>
+                                <input type="text" id="school" required placeholder="例如：中国农业大学">
+                            </div>
+                            <div class="form-group">
+                                <label for="dept">本科就读院系 *</label>
+                                <input type="text" id="dept" required placeholder="例如：理学院">
+                            </div>
+                            <div class="form-group">
+                                <label for="major">本科所学专业 *</label>
+                                <input type="text" id="major" required placeholder="例如：工程力学">
+                            </div>
+                            <div class="form-group">
+                                <label for="gpa">平均绩点 (GPA) *</label>
+                                <input type="text" id="gpa" required placeholder="如：3.8 / 4.0">
+                            </div>
+                            <div class="form-group">
+                                <label for="majorRank">专业排名 *</label>
+                                <input type="text" id="majorRank" required placeholder="如：3/50">
+                            </div>
+                            <div class="form-group">
+                                <label for="compRank">综合排名 (如没有填0) *</label>
+                                <input type="text" id="compRank" required placeholder="如：5/50 或 0">
+                            </div>
+                            <div class="form-group">
+                                <label for="english">英语成绩 (如CET6-475) *</label>
+                                <input type="text" id="english" required placeholder="如：CET6-475、TOEFL-95">
+                            </div>
+                            <div class="form-group">
+                                <label for="intendedAdvisor">意向导师 *</label>
+                                <input type="text" id="intendedAdvisor" required placeholder="请填写意向导师姓名">
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="research">科研经历及成果</label>
+                                <textarea id="research" rows="4" placeholder="请简述您参加过的学科竞赛、科研立项或发表的学术论文（选填）"></textarea>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="pdfFile">上传个人报考证明材料 (仅限PDF文件) *</label>
+                                <input type="file" id="pdfFile" accept=".pdf" required>
+                                <p class="file-hint">提示：请将成绩单、英语证书、科研成果等合并为一个小于 20MB 的标准 PDF 文件上传。</p>
+                            </div>
+                        </div>
+                        <button type="submit" class="submit-btn" style="width: 100%; margin-top: 15px;">保存并提交招生材料</button>
+                    </form>
+                </div>
+
+                <div class="admin-panel" id="adminPanel">
+                    <div class="admin-actions">
+                        <button class="export-btn" onclick="exportDataToCSV()">📊 导出所有同学的报名信息 (CSV)</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>网报账号</th>
+                                    <th>姓名</th>
+                                    <th>身份证号</th>
+                                    <th>电话</th>
+                                    <th>邮箱</th>
+                                    <th>毕业学校</th>
+                                    <th>院系</th>
+                                    <th>专业</th>
+                                    <th>绩点</th>
+                                    <th>专业排名</th>
+                                    <th>综合排名</th>
+                                    <th>英语成绩</th>
+                                    <th>意向导师</th>
+                                    <th>PDF报名材料</th>
+                                    <th>递交时间</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminTableBody">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </section>
+        </div>
+    </main>
+
+    <script>
+        /* ==================== IndexedDB 离线全栈数据存储架构 ==================== */
+        let db;
+        const DB_NAME = "CAU_Admissions_Platform_DB_V2";
+        const DB_VERSION = 1;
+
+        function initIndexedDB() {
+            const request = indexedDB.open(DB_NAME, DB_VERSION);
+            
+            request.onupgradeneeded = function(e) {
+                db = e.target.result;
+                if (!db.objectStoreNames.contains("users")) {
+                    db.createObjectStore("users", { keyPath: "username" });
+                }
+            };
+
+            request.onsuccess = function(e) {
+                db = e.target.result;
+                console.log("IndexedDB 招生本地数据库扩容配置完毕！");
+                checkSession();
+            };
+
+            request.onerror = function(e) {
+                console.error("数据库初始化失败", e);
+            };
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            initIndexedDB();
+            initScrollSpy();
+        });
+
+        /* ==================== 账户安全模块 (注册/登录/会话) ==================== */
+        let currentUser = null;
+
+        function switchAuthMode(mode) {
+            const tabs = document.querySelectorAll('.auth-tab-btn');
+            const forms = document.querySelectorAll('.auth-form');
+            
+            tabs.forEach(t => t.classList.remove('active'));
+            forms.forEach(f => f.classList.remove('active'));
+
+            if(mode === 'login') {
+                tabs[0].classList.add('active');
+                document.getElementById('loginForm').classList.add('active');
+            } else {
+                tabs[1].classList.add('active');
+                document.getElementById('registerForm').classList.add('active');
+            }
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const user = document.getElementById('regUser').value.trim();
+            const pwd = document.getElementById('regPwd').value;
+
+            if(user.toLowerCase() === 'admin') {
+                alert('系统保留账号，无法注册该用户名！');
+                return;
+            }
+
+            const transaction = db.transaction(["users"], "readwrite");
+            const store = transaction.objectStore("users");
+            const checkRequest = store.get(user);
+
+            checkRequest.onsuccess = function() {
+                if(checkRequest.result) {
+                    alert("该账号已被注册，请直接登录！");
+                } else {
+                    const newUser = {
+                        username: user, password: pwd, fullName: "", idCard: "", phone: "", email: "",
+                        school: "", dept: "", major: "", gpa: "", majorRank: "", compRank: "",
+                        english: "", intendedAdvisor: "", research: "", pdfBlob: null, fileName: "", uploadTime: ""
+                    };
+                    store.add(newUser).onsuccess = function() {
+                        alert("注册成功！请切换到登录界面进行登录。");
+                        document.getElementById('registerForm').reset();
+                        switchAuthMode('login');
+                        document.getElementById('loginUser').value = user;
+                    };
+                }
+            };
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const user = document.getElementById('loginUser').value.trim();
+            const pwd = document.getElementById('loginPwd').value;
+
+            // 契合指令：特权内置硬编码管理账户验证
+            if(user === 'admin' && pwd === 'adminzbk') {
+                executeLoginSession('admin');
+                return;
+            }
+
+            const transaction = db.transaction(["users"], "readonly");
+            const store = transaction.objectStore("users");
+            const request = store.get(user);
+
+            request.onsuccess = function() {
+                const userData = request.result;
+                if(userData && userData.password === pwd) {
+                    executeLoginSession(userData);
+                } else {
+                    alert("账号或密码错误，请重试！");
+                }
+            };
+        }
+
+        function executeLoginSession(userInstance) {
+            if(userInstance === 'admin') {
+                currentUser = { username: 'admin', isAdmin: true };
+                localStorage.setItem("cau_session_v2", "admin");
+            } else {
+                currentUser = userInstance;
+                localStorage.setItem("cau_session_v2", userInstance.username);
+            }
+            renderAuthUI();
+        }
+
+        function checkSession() {
+            const cachedSession = localStorage.getItem("cau_session_v2");
+            if(!cachedSession) return;
+
+            if(cachedSession === 'admin') {
+                currentUser = { username: 'admin', isAdmin: true };
+                renderAuthUI();
+            } else {
+                const transaction = db.transaction(["users"], "readonly");
+                const store = transaction.objectStore("users");
+                const request = store.get(cachedSession);
+                request.onsuccess = function() {
+                    if(request.result) {
+                        currentUser = request.result;
+                        renderAuthUI();
+                    }
+                };
+            }
+        }
+
+        function handleLogout() {
+            localStorage.removeItem("cau_session_v2");
+            currentUser = null;
+            location.reload();
+        }
+
+        function renderAuthUI() {
+            const statusArea = document.getElementById('userStatusArea');
+            const authBox = document.getElementById('authBox');
+            const applyPanel = document.getElementById('applyPanel');
+            const adminPanel = document.getElementById('adminPanel');
+
+            if(!currentUser) return;
+
+            if(currentUser.isAdmin) {
+                statusArea.innerHTML = `<span>👑 管理员(教务)</span><button class="logout-btn" onclick="handleLogout()">注销</button>`;
+                authBox.style.display = 'none';
+                applyPanel.style.display = 'none';
+                adminPanel.style.display = 'block';
+                loadAdminTableData();
+            } else {
+                statusArea.innerHTML = `<span>🎓 账号: ${currentUser.username}</span><button class="logout-btn" onclick="handleLogout()">注销</button>`;
+                authBox.style.display = 'none';
+                adminPanel.style.display = 'none';
+                applyPanel.style.display = 'flex';
+
+                // 数据无损回填表单
+                const fields = ['fullName', 'idCard', 'phoneNumber', 'email', 'school', 'dept', 'major', 'gpa', 'majorRank', 'compRank', 'english', 'intendedAdvisor', 'research'];
+                fields.forEach(f => {
+                    const dbValue = f === 'phoneNumber' ? currentUser.phone : currentUser[f];
+                    if(dbValue) document.getElementById(f).value = dbValue;
+                });
+            }
+        }
+
+        /* ==================== 学生多要素材料提交通道 (含<20MB PDF) ==================== */
+        function handleApplicationSubmit(e) {
+            e.preventDefault();
+            const fileInput = document.getElementById('pdfFile');
+            
+            if(!fileInput.files || fileInput.files.length === 0) {
+                alert("请选择需要上传的PDF报考材料！");
+                return;
+            }
+
+            const file = fileInput.files[0];
+            if(file.type !== "application/pdf" && !file.name.endsWith('.pdf')) {
+                alert("文件类型错误！平台只接收标准的 .pdf 格式文件。");
+                return;
+            }
+
+            const MAX_SIZE = 20 * 1024 * 1024;
+            if(file.size > MAX_SIZE) {
+                alert(`文件超限！最大支持 20MB，当前文件大小为 ${(file.size/(1024*1024)).toFixed(2)}MB。`);
+                return;
+            }
+
+            const transaction = db.transaction(["users"], "readwrite");
+            const store = transaction.objectStore("users");
+            
+            const getReq = store.get(currentUser.username);
+            getReq.onsuccess = function() {
+                const record = getReq.result;
+                
+                // 采集并绑定全面要素
+                record.fullName = document.getElementById('fullName').value.trim();
+                record.idCard = document.getElementById('idCard').value.trim();
+                record.phone = document.getElementById('phoneNumber').value.trim();
+                record.email = document.getElementById('email').value.trim();
+                record.school = document.getElementById('school').value.trim();
+                record.dept = document.getElementById('dept').value.trim();
+                record.major = document.getElementById('major').value.trim();
+                record.gpa = document.getElementById('gpa').value.trim();
+                record.majorRank = document.getElementById('majorRank').value.trim();
+                record.compRank = document.getElementById('compRank').value.trim();
+                record.english = document.getElementById('english').value.trim();
+                record.intendedAdvisor = document.getElementById('intendedAdvisor').value.trim();
+                record.research = document.getElementById('research').value.trim();
+                
+                record.pdfBlob = file;
+                record.fileName = file.name;
+                record.uploadTime = new Date().toLocaleString('zh-CN');
+
+                store.put(record).onsuccess = function() {
+                    alert("🎉 恭喜！全量网报招生信息及材料已通过 IndexedDB 安全离线保存成功！");
+                    currentUser = record; 
+                };
+            };
+        }
+
+        /* ==================== 管理员宏观调控与全面信息无损导出系统 ==================== */
+        let cachedAllStudents = [];
+
+        function loadAdminTableData() {
+            const tableBody = document.getElementById('adminTableBody');
+            tableBody.innerHTML = "";
+            cachedAllStudents = [];
+
+            const transaction = db.transaction(["users"], "readonly");
+            const store = transaction.objectStore("users");
+            
+            store.openCursor().onsuccess = function(e) {
+                const cursor = e.target.result;
+                if(cursor) {
+                    const user = cursor.value;
+                    cachedAllStudents.push(user);
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${user.username}</td>
+                        <td>${user.fullName || '-'}</td>
+                        <td>${user.idCard || '-'}</td>
+                        <td>${user.phone || '-'}</td>
+                        <td>${user.email || '-'}</td>
+                        <td>${user.school || '-'}</td>
+                        <td>${user.dept || '-'}</td>
+                        <td>${user.major || '-'}</td>
+                        <td>${user.gpa || '-'}</td>
+                        <td>${user.majorRank || '-'}</td>
+                        <td>${user.compRank || '-'}</td>
+                        <td>${user.english || '-'}</td>
+                        <td>${user.intendedAdvisor || '-'}</td>
+                        <td>${user.pdfBlob ? `<a class="action-link" onclick="downloadSinglePDF('${user.username}')">📥 下载PDF (${(user.pdfBlob.size/(1024*1024)).toFixed(2)}MB)</a>` : '<span style="color:red">未传材料</span>'}</td>
+                        <td>${user.uploadTime || '-'}</td>
+                    `;
+                    tableBody.appendChild(tr);
+                    cursor.continue();
+                } else if(tableBody.children.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="15" style="text-align:center; color:gray; padding: 20px;">当前数据库内暂无有效同学的网报报考记录。</td></tr>`;
+                }
+            };
+        }
+
+        function downloadSinglePDF(username) {
+            const student = cachedAllStudents.find(s => s.username === username);
+            if(!student || !student.pdfBlob) return;
+
+            const url = URL.createObjectURL(student.pdfBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `应用力学系网报_${student.fullName || student.username}_证明材料.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function exportDataToCSV() {
+            if(cachedAllStudents.length === 0) {
+                alert("当前系统内尚无有效数据记录可供导出。");
+                return;
+            }
+
+            let csvContent = "\uFEFF"; 
+            csvContent += "网报账号,学生姓名,身份证号,手机号码,电子邮箱,就读学校,院系,专业,平均绩点,专业排名,综合排名,英语成绩,意向导师,科研经历及成果,材料文件名,上报提交时间\n";
+
+            cachedAllStudents.forEach(stu => {
+                const row = [
+                    stu.username,
+                    stu.fullName || "未填",
+                    stu.idCard || "未填",
+                    stu.phone || "未填",
+                    stu.email || "未填",
+                    stu.school || "未填",
+                    stu.dept || "未填",
+                    stu.major || "未填",
+                    stu.gpa || "未填",
+                    stu.majorRank || "未填",
+                    stu.compRank || "未填",
+                    stu.english || "未填",
+                    stu.intendedAdvisor || "未填",
+                    stu.research || "未填",
+                    stu.fileName || "未传",
+                    stu.uploadTime || "无"
+                ].map(text => `"${String(text).replace(/"/g, '""')}"`).join(","); 
+                csvContent += row + "\n";
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `中国农大应用力学系报考全要素汇总表_${new Date().toISOString().slice(0,10)}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        /* ==================== 页面框架基本微交互与滚动流控监听 ==================== */
+        document.getElementById('searchBtn').addEventListener('click', executeGlobalSearch);
+        document.getElementById('searchInput').addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') executeGlobalSearch();
+        });
+
+        function executeGlobalSearch() {
+            const baseEngine = document.getElementById('engineSelect').value;
+            const query = document.getElementById('searchInput').value.trim();
+            if(!query) return alert("请输入检索关键词！");
+            window.open(baseEngine + encodeURIComponent(query), '_blank');
+        }
+
+        const hamburger = document.getElementById('hamburger');
+        const sidebar = document.getElementById('sidebar');
+
+        hamburger.addEventListener('click', (e) => {
+            sidebar.classList.toggle('open');
+            e.stopPropagation();
+        });
+
+        document.addEventListener('click', (e) => {
+            if(sidebar.classList.contains('open') && !sidebar.contains(e.target) && e.target !== hamburger) {
+                sidebar.classList.remove('open');
+            }
+        });
+
+        function initScrollSpy() {
+            const sections = document.querySelectorAll('.content-section');
+            const navItems = document.querySelectorAll('.nav-item');
+
+            window.addEventListener('scroll', () => {
+                let currentSectionId = "";
+                const scrollPosition = window.scrollY + 120;
+
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.offsetHeight;
+                    if (scrollPosition >= sectionTop && scrollPosition < (sectionTop + sectionHeight)) {
+                        currentSectionId = section.getAttribute('id');
+                    }
+                });
+
+                if(currentSectionId) {
+                    navItems.forEach(item => {
+                        item.classList.remove('active');
+                        if(item.getAttribute('data-target') === currentSectionId) {
+                            item.classList.add('active');
+                        }
+                    });
+                }
+            });
+
+            document.querySelectorAll('.nav-item a').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    sidebar.classList.remove('open');
+                    const targetId = this.getAttribute('href');
+                    document.querySelector(targetId).scrollIntoView({ behavior: 'smooth' });
+                });
+            });
+        }
+    </script>
+</body>
+</html>
