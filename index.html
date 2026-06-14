@@ -317,7 +317,6 @@
             .form-group.full-width { grid-column: span 1; }
         }
     </style>
-<base target="_blank">
 </head>
 <body>
 
@@ -400,13 +399,13 @@
 
             <section id="portal" class="content-section">
                 <h2 class="section-title">网上报名交互系统</h2>
-
+                
                 <div class="auth-box" id="authBox">
                     <div class="auth-tabs">
                         <button class="auth-tab-btn active" onclick="switchAuthMode('login')">学生/管理员登录</button>
                         <button class="auth-tab-btn" onclick="switchAuthMode('register')">学生账号注册</button>
                     </div>
-
+                    
                     <form class="auth-form active" id="loginForm" onsubmit="handleLogin(event)">
                         <div class="form-group">
                             <label for="loginUser">用户名 / 账号</label>
@@ -532,18 +531,35 @@
     </main>
 
     <script>
-        /* ==================== 全局配置：部署后替换为你的 PythonAnywhere 域名 ==================== */
-        const API_BASE = 'https://zbkcau.pythonanywhere.com'; 
-
+        const API_BASE = 'https://zbkcau.pythonanywhere.com';
         let currentUser = null;
         let cachedAllStudents = [];
+
+        function getAuthHeaders() {
+            const token = localStorage.getItem('cau_token');
+            return token ? {'X-Auth-Token': token} : {};
+        }
 
         document.addEventListener("DOMContentLoaded", () => {
             checkSession();
             initScrollSpy();
+            document.getElementById('searchBtn').addEventListener('click', executeGlobalSearch);
+            document.getElementById('searchInput').addEventListener('keypress', (e) => {
+                if(e.key === 'Enter') executeGlobalSearch();
+            });
+            const hamburger = document.getElementById('hamburger');
+            const sidebar = document.getElementById('sidebar');
+            hamburger.addEventListener('click', (e) => {
+                sidebar.classList.toggle('open');
+                e.stopPropagation();
+            });
+            document.addEventListener('click', (e) => {
+                if(sidebar.classList.contains('open') && !sidebar.contains(e.target) && e.target !== hamburger) {
+                    sidebar.classList.remove('open');
+                }
+            });
         });
 
-        /* ==================== 认证交互模块 ==================== */
         function switchAuthMode(mode) {
             const tabs = document.querySelectorAll('.auth-tab-btn');
             const forms = document.querySelectorAll('.auth-form');
@@ -576,10 +592,11 @@
                 if(status !== 201) {
                     alert(data.error || '注册失败');
                 } else {
-                    alert("注册成功！请切换到登录界面进行登录。");
-                    document.getElementById('registerForm').reset();
-                    switchAuthMode('login');
-                    document.getElementById('loginUser').value = user;
+                    localStorage.setItem('cau_token', data.token);
+                    localStorage.setItem('cau_session_v2', data.username);
+                    currentUser = data;
+                    alert('注册成功！已自动登录。');
+                    renderAuthUI();
                 }
             });
         }
@@ -591,28 +608,32 @@
             fetch(`${API_BASE}/api/login`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({username: user, password: pwd}),
-                credentials: 'include'
+                body: JSON.stringify({username: user, password: pwd})
             })
             .then(res => res.json().then(data => ({status: res.status, data})))
             .then(({status, data}) => {
                 if(status !== 200) {
                     alert(data.error || '登录失败');
                 } else {
+                    localStorage.setItem('cau_token', data.token);
+                    localStorage.setItem('cau_session_v2', data.username);
                     currentUser = data;
-                    localStorage.setItem("cau_session_v2", data.username);
                     renderAuthUI();
                 }
             });
         }
 
         function checkSession() {
-            fetch(`${API_BASE}/api/me`, {credentials: 'include'})
+            const token = localStorage.getItem('cau_token');
+            if(!token) return;
+            fetch(`${API_BASE}/api/me`, {
+                headers: getAuthHeaders()
+            })
             .then(res => res.json())
             .then(data => {
                 if(data.loggedIn) {
                     currentUser = data;
-                    localStorage.setItem("cau_session_v2", data.username);
+                    localStorage.setItem('cau_session_v2', data.username);
                     renderAuthUI();
                 }
             })
@@ -620,14 +641,10 @@
         }
 
         function handleLogout() {
-            fetch(`${API_BASE}/api/logout`, {
-                method: 'POST',
-                credentials: 'include'
-            }).finally(() => {
-                localStorage.removeItem("cau_session_v2");
-                currentUser = null;
-                location.reload();
-            });
+            localStorage.removeItem('cau_token');
+            localStorage.removeItem('cau_session_v2');
+            currentUser = null;
+            location.reload();
         }
 
         function renderAuthUI() {
@@ -635,9 +652,7 @@
             const authBox = document.getElementById('authBox');
             const applyPanel = document.getElementById('applyPanel');
             const adminPanel = document.getElementById('adminPanel');
-
             if(!currentUser) return;
-
             if(currentUser.isAdmin) {
                 statusArea.innerHTML = `<span>👑 管理员(教务)</span><button class="logout-btn" onclick="handleLogout()">注销</button>`;
                 authBox.style.display = 'none';
@@ -649,7 +664,6 @@
                 authBox.style.display = 'none';
                 adminPanel.style.display = 'none';
                 applyPanel.style.display = 'flex';
-
                 const fields = ['fullName','idCard','phoneNumber','email','school','dept','major','gpa','majorRank','compRank','english','intendedAdvisor','research'];
                 fields.forEach(f => {
                     const el = document.getElementById(f);
@@ -658,17 +672,21 @@
             }
         }
 
-        /* ==================== 学生材料提交通道 ==================== */
         function handleApplicationSubmit(e) {
             e.preventDefault();
+            const token = localStorage.getItem('cau_token');
+            if(!token) {
+                alert('请先登录！');
+                return;
+            }
             const fileInput = document.getElementById('pdfFile');
             if(!fileInput.files || fileInput.files.length === 0) {
-                alert("请选择需要上传的PDF报考材料！");
+                alert('请选择需要上传的PDF报考材料！');
                 return;
             }
             const file = fileInput.files[0];
             if(!file.name.toLowerCase().endsWith('.pdf')) {
-                alert("文件类型错误！平台只接收标准的 .pdf 格式文件。");
+                alert('文件类型错误！平台只接收标准的 .pdf 格式文件。');
                 return;
             }
             const MAX_SIZE = 20 * 1024 * 1024;
@@ -676,7 +694,6 @@
                 alert(`文件超限！最大支持 20MB，当前文件大小为 ${(file.size/(1024*1024)).toFixed(2)}MB。`);
                 return;
             }
-
             const formData = new FormData();
             const fields = ['fullName','idCard','phoneNumber','email','school','dept','major','gpa','majorRank','compRank','english','intendedAdvisor','research'];
             fields.forEach(f => {
@@ -684,30 +701,31 @@
                 formData.append(f, el ? el.value.trim() : '');
             });
             formData.append('pdfFile', file);
-
             fetch(`${API_BASE}/api/submit`, {
                 method: 'POST',
-                body: formData,
-                credentials: 'include'
+                headers: getAuthHeaders(),
+                body: formData
             })
             .then(res => res.json().then(data => ({status: res.status, data})))
             .then(({status, data}) => {
                 if(status !== 200) {
                     alert(data.error || '提交失败');
                 } else {
-                    alert("🎉 恭喜！全量网报招生信息及材料已成功提交到服务器！");
+                    alert('🎉 恭喜！全量网报招生信息及材料已成功提交到服务器！');
                 }
             })
-            .catch(err => alert("网络错误: " + err.message));
+            .catch(err => alert('网络错误: ' + err.message));
         }
 
-        /* ==================== 管理员宏观调控与导出系统 ==================== */
         function loadAdminTableData() {
             const tableBody = document.getElementById('adminTableBody');
-            tableBody.innerHTML = "";
+            tableBody.innerHTML = '';
             cachedAllStudents = [];
-
-            fetch(`${API_BASE}/api/admin/students`, {credentials: 'include'})
+            const token = localStorage.getItem('cau_token');
+            if(!token) return;
+            fetch(`${API_BASE}/api/admin/students`, {
+                headers: getAuthHeaders()
+            })
             .then(res => {
                 if(res.status === 403) { alert('权限不足'); return []; }
                 return res.json();
@@ -716,7 +734,7 @@
                 if(!Array.isArray(students)) return;
                 cachedAllStudents = students;
                 if(students.length === 0) {
-                    tableBody.innerHTML = `<tr><td colspan="15" style="text-align:center; color:gray; padding: 20px;">当前数据库内暂无有效同学的网报报考记录。</td></tr>`;
+                    tableBody.innerHTML = '<tr><td colspan="15" style="text-align:center; color:gray; padding: 20px;">当前数据库内暂无有效同学的网报报考记录。</td></tr>';
                     return;
                 }
                 students.forEach(user => {
@@ -735,7 +753,7 @@
                         <td>${user.compRank || '-'}</td>
                         <td>${user.english || '-'}</td>
                         <td>${user.intendedAdvisor || '-'}</td>
-                        <td>${user.fileName ? `<a class="action-link" href="${API_BASE}/api/admin/download/${user.username}" target="_blank">📥 下载PDF</a>` : '<span style="color:red">未传材料</span>'}</td>
+                        <td>${user.fileName ? `<a class="action-link" onclick="downloadSinglePDF('${user.username}')">📥 下载PDF</a>` : '<span style="color:red">未传材料</span>'}</td>
                         <td>${user.uploadTime || '-'}</td>
                     `;
                     tableBody.appendChild(tr);
@@ -744,43 +762,55 @@
         }
 
         function downloadSinglePDF(username) {
-            window.open(`${API_BASE}/api/admin/download/${username}`, '_blank');
+            const token = localStorage.getItem('cau_token');
+            if(!token) return;
+            fetch(`${API_BASE}/api/admin/download/${username}`, {
+                headers: getAuthHeaders()
+            })
+            .then(res => res.blob())
+            .then(blob => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = '证明材料.pdf';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            });
         }
 
         function exportDataToCSV() {
-            window.open(`${API_BASE}/api/admin/export`, '_blank');
+            const token = localStorage.getItem('cau_token');
+            if(!token) return;
+            fetch(`${API_BASE}/api/admin/export`, {
+                headers: getAuthHeaders()
+            })
+            .then(res => res.blob())
+            .then(blob => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `CAU_Mechanics_Export_${new Date().toISOString().slice(0,10)}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            });
         }
-
-        /* ==================== 页面基础交互与滚动监听 ==================== */
-        document.getElementById('searchBtn').addEventListener('click', executeGlobalSearch);
-        document.getElementById('searchInput').addEventListener('keypress', (e) => {
-            if(e.key === 'Enter') executeGlobalSearch();
-        });
 
         function executeGlobalSearch() {
             const baseEngine = document.getElementById('engineSelect').value;
             const query = document.getElementById('searchInput').value.trim();
-            if(!query) return alert("请输入检索关键词！");
+            if(!query) return alert('请输入检索关键词！');
             window.open(baseEngine + encodeURIComponent(query), '_blank');
         }
-
-        const hamburger = document.getElementById('hamburger');
-        const sidebar = document.getElementById('sidebar');
-        hamburger.addEventListener('click', (e) => {
-            sidebar.classList.toggle('open');
-            e.stopPropagation();
-        });
-        document.addEventListener('click', (e) => {
-            if(sidebar.classList.contains('open') && !sidebar.contains(e.target) && e.target !== hamburger) {
-                sidebar.classList.remove('open');
-            }
-        });
 
         function initScrollSpy() {
             const sections = document.querySelectorAll('.content-section');
             const navItems = document.querySelectorAll('.nav-item');
             window.addEventListener('scroll', () => {
-                let currentSectionId = "";
+                let currentSectionId = '';
                 const scrollPosition = window.scrollY + 120;
                 sections.forEach(section => {
                     const sectionTop = section.offsetTop;
@@ -801,7 +831,7 @@
             document.querySelectorAll('.nav-item a').forEach(anchor => {
                 anchor.addEventListener('click', function(e) {
                     e.preventDefault();
-                    sidebar.classList.remove('open');
+                    document.getElementById('sidebar').classList.remove('open');
                     const targetId = this.getAttribute('href');
                     document.querySelector(targetId).scrollIntoView({ behavior: 'smooth' });
                 });
